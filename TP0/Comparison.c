@@ -1,12 +1,16 @@
 #include <stdio.h>
 
 int main(void) {
-	int a = 8;
-	int b = 5;
+	int a;
+	int b;
+	printf("Enter a : \n");
+	scanf("%d", &a);
+	printf("Enter b : \n");
+	scanf("%d", &b);
 	if (a<b) {
-		printf("%d is greater \n", b);
+		printf("b is greater \n", b);
 	}else{
-		printf("%u is greater \n", a);
+		printf("a is greater \n", a);
 	}
 
 }
