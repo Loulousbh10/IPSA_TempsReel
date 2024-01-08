@@ -1,29 +1,48 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <unistd.h>
 
-sem_t mutex;
+// Declare a semaphore
+sem_t mySemaphore;
 
-void *printHelloWorld(void *arg) {
-    sem_wait(&mutex);
-
+// Function to be executed by the thread
+void *threadFunction(void *arg) {
+    // Print "Hello World" from the thread
     printf("Hello World\n");
-
-    sem_post(&mutex);
 
     return NULL;
 }
 
 int main() {
-    sem_init(&mutex, 0, 1);
+    // Initialize the semaphore with an initial value of 0
+    sem_init(&mySemaphore, 0, 0);
 
-    pthread_t thread_id;
-    pthread_create(&thread_id, NULL, printHelloWorld, NULL);
+    // Create a thread
+    pthread_t myThread;
+    if (pthread_create(&myThread, NULL, threadFunction, NULL) != 0) {
+        perror("Error creating thread");
+        exit(EXIT_FAILURE);
+    }
 
-    pthread_join(thread_id, NULL);
+    // Print the first line
+    printf("Line 1\n");
 
-    sem_destroy(&mutex);
+    // Sleep for 10 seconds
+    sleep(10);
+
+    // Release the semaphore to allow the thread to print "Hello World"
+    sem_post(&mySemaphore);
+
+    // Wait for the thread to finish
+    if (pthread_join(myThread, NULL) != 0) {
+        perror("Error joining thread");
+        exit(EXIT_FAILURE);
+    }
+
+    // Destroy the semaphore
+    sem_destroy(&mySemaphore);
 
     return 0;
 }
-
