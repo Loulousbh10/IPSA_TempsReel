@@ -9,35 +9,40 @@ sem_t mySemaphore;
 
 // Function to be executed by the thread
 void *threadFunction(void *arg) {
+    // Wait for the semaphore to be available
+    sem_wait(&mySemaphore);
+
     // Print "Hello World" from the thread
     printf("Hello World\n");
+
+    // Release the semaphore
+    sem_post(&mySemaphore);
 
     return NULL;
 }
 
 int main() {
-    // Initialize the semaphore with an initial value of 0
-    sem_init(&mySemaphore, 0, 0);
+    // Initialize the semaphore with an initial value of 1
+    sem_init(&mySemaphore, 0, 1);
 
-    // Create a thread
-    pthread_t myThread;
-    if (pthread_create(&myThread, NULL, threadFunction, NULL) != 0) {
-        perror("Error creating thread");
+    // Create two threads
+    pthread_t thread1, thread2;
+    
+    if (pthread_create(&thread1, NULL, threadFunction, NULL) != 0 ||
+        pthread_create(&thread2, NULL, threadFunction, NULL) != 0) {
+        perror("Error creating threads");
         exit(EXIT_FAILURE);
     }
-
-    // Print the first line
-    printf("Line 1\n");
 
     // Sleep for 10 seconds
     sleep(10);
 
-    // Release the semaphore to allow the thread to print "Hello World"
+    // Release the semaphore to allow both threads to print "Hello World"
     sem_post(&mySemaphore);
-
-    // Wait for the thread to finish
-    if (pthread_join(myThread, NULL) != 0) {
-        perror("Error joining thread");
+    
+    // Wait for the threads to finish
+    if (pthread_join(thread1, NULL) != 0 || pthread_join(thread2, NULL) != 0) {
+        perror("Error joining threads");
         exit(EXIT_FAILURE);
     }
 
