@@ -59,7 +59,29 @@ static QueueHandle_t xQueue = NULL;
 static TimerHandle_t xTimer = NULL;
 
 /*-----------------------------------------------------------*/
+// Binary search function
+int binarySearch(int arr[], int low, int high, int target) {
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
 
+        // Check if the target is present at the middle
+        if (arr[mid] == target)
+            return mid;
+
+        // If the target is greater, ignore the left half
+        else if (arr[mid] < target)
+            low = mid + 1;
+
+        // If the target is smaller, ignore the right half
+        else
+            high = mid - 1;
+    }
+
+    // If the target is not present in the array
+    return -1;
+}
+
+/*-----------------------------------------------------------*/
 // Entry point of the application
 void ipsa_sched(void) {
     const TickType_t xTimerPeriod = mainTIMER_SEND_FREQUENCY_MS;
@@ -209,10 +231,7 @@ static void prvQueueReceiveTask(void *pvParameters) {
             printf("The result of the sum is: %.2d\n", sum);
         }
         else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER3) {
-            int arr[50] = {};
-            for (int i = 0; i < 50; i++) {
-                arr[i] = rand() % 101;
-            }
+            int arr[50] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100};
 
             printf("The binary search will be done on the following array: ");
             for (int i = 0; i < 50; ++i) {
@@ -221,7 +240,7 @@ static void prvQueueReceiveTask(void *pvParameters) {
             printf("\n");
 
             int size = sizeof(arr) / sizeof(arr[0]);
-            int target = 15;
+            int target = rand() % 101;
             int result = binarySearch(arr, 0, size - 1, target);
 
             if (result != -1) {
