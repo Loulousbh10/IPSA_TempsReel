@@ -12,7 +12,6 @@
 
 /* Local includes. */
 #include "console.h"
-extern int binarySearch(int arr[], int low, int high, int target);
 
 /* Priorities at which the tasks are created. */
 #define mainQUEUE_RECEIVE_TASK_PRIORITY    ( tskIDLE_PRIORITY + 4 )
@@ -65,19 +64,24 @@ int binarySearch(int arr[], int low, int high, int target) {
         int mid = low + (high - low) / 2;
 
         // Check if the target is present at the middle
-        if (arr[mid] == target)
+        if (arr[mid] == target) {
+            printf("Element %d found at index %d.\n", target, mid);
             return mid;
+        }
 
         // If the target is greater, ignore the left half
-        else if (arr[mid] < target)
+        else if (arr[mid] < target) {
             low = mid + 1;
+        }
 
         // If the target is smaller, ignore the right half
-        else
+        else {
             high = mid - 1;
+        }
     }
 
     // If the target is not present in the array
+    printf("Element %d not found in the array.\n", target);
     return -1;
 }
 
@@ -208,47 +212,40 @@ static void prvQueueReceiveTask(void *pvParameters) {
 
     (void)pvParameters;
 
+    int result; // Declare result variable
+
     for (;;) {
         // Receive a value from the queue, wait indefinitely if the queue is empty
-        xQueueReceive
-
-(xQueue, &ulReceivedValue, portMAX_DELAY);
+        xQueueReceive(xQueue, &ulReceivedValue, portMAX_DELAY);
 
         // Check the received value and perform corresponding actions
         if (ulReceivedValue == mainVALUE_SENT_FROM_TASK) {
             console_print("The system is working properly.\n");
-        }
-        else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER) {
+        } else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER) {
             double celsius;
             double fahrenheit = 98.60;
             celsius = (fahrenheit - 32.0) * 5.0 / 9.0;
             printf("The temperature in Fahrenheit is %.2f, so the temperature in Celsius is: %.2f\n", fahrenheit, celsius);
-        }
-        else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER2) {
+        } else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER2) {
             long bignumber1 = 4859648569;
             long bignumber2 = 4894825966;
             int sum = bignumber1 + bignumber2;
-            printf("The result of the sum is: %.2d\n", sum);
-        }
-        else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER3) {
-            int arr[50] = {2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100};
-
+            printf("The result of the sum is: %d\n", sum);
+        } else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER3) {
+            int arr[50] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49};
             printf("The binary search will be done on the following array: ");
             for (int i = 0; i < 50; ++i) {
                 printf("%d ", arr[i]);
             }
             printf("\n");
 
-            int size = sizeof(arr) / sizeof(arr[0]);
-            int target = rand() % 101;
-            int result = binarySearch(arr, 0, size - 1, target);
-
+            result = binarySearch(arr, 0, 49, 12); // Provide correct arguments
             if (result != -1) {
-                printf("Element %d found at index %d.\n", target, result);
-            }else{
-                printf("Element %d not found in the array.\n", target);
+                printf("Element %d found at index %d.\n", ulReceivedValue, result);
+            } else {
+                printf("Element %d not found in the array.\n", ulReceivedValue);
             }
-        }else{
+        } else {
             console_print("Unexpected message\n");
         }
     }
