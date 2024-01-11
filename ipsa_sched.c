@@ -21,10 +21,10 @@
 
 /* The rate at which data is sent to the queue.  The times are converted from
  * milliseconds to ticks using the pdMS_TO_TICKS() macro. */
-#define mainTASK_SEND_FREQUENCY_MS         pdMS_TO_TICKS( 500UL )
-#define mainTIMER_SEND_FREQUENCY_MS        pdMS_TO_TICKS( 1500UL )
+#define mainTASK_SEND_FREQUENCY_MS         pdMS_TO_TICKS( 1000UL )
+#define mainTIMER_SEND_FREQUENCY_MS        pdMS_TO_TICKS( 2000UL )
 #define mainTIMER_SEND_FREQUENCY_MS2       pdMS_TO_TICKS( 3000UL )
-#define mainTIMER_SEND_FREQUENCY_MS3       pdMS_TO_TICKS( 4500UL )
+#define mainTIMER_SEND_FREQUENCY_MS3       pdMS_TO_TICKS( 4000UL )
 
 /* The number of items the queue can hold at once. */
 #define mainQUEUE_LENGTH                   ( 4 )
@@ -221,16 +221,19 @@ static void prvQueueReceiveTask(void *pvParameters) {
         // Check the received value and perform corresponding actions
         if (ulReceivedValue == mainVALUE_SENT_FROM_TASK) {
             console_print("The system is working properly.\n");
+            
         } else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER) {
             double celsius;
             double fahrenheit = 98.60;
             celsius = (fahrenheit - 32.0) * 5.0 / 9.0;
             printf("The temperature in Fahrenheit is %.2f, so the temperature in Celsius is: %.2f\n", fahrenheit, celsius);
+            
         } else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER2) {
             long bignumber1 = 4859648569;
             long bignumber2 = 4894825966;
-            int sum = bignumber1 + bignumber2;
-            printf("The result of the sum is: %d\n", sum);
+            long long multiplication = bignumber1 * bignumber2;
+            printf("The result of the sum is: %lld\n", multiplication);
+            
         } else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER3) {
             int arr[50] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49};
             printf("The binary search will be done on the following array: ");
@@ -245,6 +248,7 @@ static void prvQueueReceiveTask(void *pvParameters) {
             } else {
                 printf("Element %d not found in the array.\n", ulReceivedValue);
             }
+            
         } else {
             console_print("Unexpected message\n");
         }
