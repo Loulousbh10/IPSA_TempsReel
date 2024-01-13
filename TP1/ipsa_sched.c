@@ -5,7 +5,7 @@
 #include <time.h>
 
 /* Kernel includes. */
-#include "Téléchargements/FreeRTOSv202107.00/FreeRTOS/Source/include/FreeRTOS.h"
+#include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
 #include "semphr.h"
@@ -14,10 +14,10 @@
 #include "console.h"
 
 /* Priorities at which the tasks are created. */
-#define mainQUEUE_RECEIVE_TASK_PRIORITY    ( tskIDLE_PRIORITY + 4 )
-#define mainQUEUE_SEND_TASK_PRIORITY       ( tskIDLE_PRIORITY + 1 )
-#define mainQUEUE_SEND_TASK_PRIORITY2      ( tskIDLE_PRIORITY + 2 )
-#define mainQUEUE_SEND_TASK_PRIORITY3      ( tskIDLE_PRIORITY + 3 )
+#define mainQUEUE_RECEIVE_TASK_PRIORITY    ( tskIDLE_PRIORITY + 1 )
+#define mainQUEUE_SEND_TASK_PRIORITY       ( tskIDLE_PRIORITY + 2 )
+#define mainQUEUE_SEND_TASK_PRIORITY2      ( tskIDLE_PRIORITY + 3 )
+#define mainQUEUE_SEND_TASK_PRIORITY3      ( tskIDLE_PRIORITY + 4 )
 
 /* The rate at which data is sent to the queue.  The times are converted from
  * milliseconds to ticks using the pdMS_TO_TICKS() macro. */
@@ -31,10 +31,10 @@
 
 /* The values sent to the queue receive task from the queue send task and the
  * queue send software timer respectively. */
-#define mainVALUE_SENT_FROM_TASK           ( 100UL )
-#define mainVALUE_SENT_FROM_TIMER          ( 200UL )
-#define mainVALUE_SENT_FROM_TIMER2         ( 300UL )
-#define mainVALUE_SENT_FROM_TIMER3         ( 400UL )
+#define mainVALUE_SENT_FROM_TASK           ( 1000UL )
+#define mainVALUE_SENT_FROM_TIMER          ( 2000UL )
+#define mainVALUE_SENT_FROM_TIMER2         ( 3000UL )
+#define mainVALUE_SENT_FROM_TIMER3         ( 4000UL )
 
 /*-----------------------------------------------------------*/
 
@@ -51,7 +51,7 @@ static void prvQueueSendTimerCallback3(TimerHandle_t xTimerHandle);
 
 /*-----------------------------------------------------------*/
 
-/* The queue used by both tasks. */
+/* The queue used by the four tasks. */
 static QueueHandle_t xQueue = NULL;
 
 /* A software timer that is started from the tick hook. */
@@ -232,7 +232,7 @@ static void prvQueueReceiveTask(void *pvParameters) {
             long bignumber1 = 4859648569;
             long bignumber2 = 4894825966;
             long long multiplication = bignumber1 * bignumber2;
-            printf("The result of the sum is: %lld\n", multiplication);
+            printf("The result of the product is: %lld\n", multiplication);
             
         } else if (ulReceivedValue == mainVALUE_SENT_FROM_TIMER3) {
             int arr[50] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49};
@@ -241,14 +241,9 @@ static void prvQueueReceiveTask(void *pvParameters) {
                 printf("%d ", arr[i]);
             }
             printf("\n");
-
-            result = binarySearch(arr, 0, 49, 12); // Provide correct arguments
-            if (result != -1) {
-                printf("Element %d found at index %d.\n", ulReceivedValue, result);
-            } else {
-                printf("Element %d not found in the array.\n", ulReceivedValue);
-            }
-            
+			// We search the number 12 in the ordered array of 50 numbers from 0 to 49.
+            result = binarySearch(arr, 0, 49, 12); 
+ 
         } else {
             console_print("Unexpected message\n");
         }
