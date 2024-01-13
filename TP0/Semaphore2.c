@@ -1,62 +1,53 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
 
-// Global semaphore (mutex)
-sem_t mutex;
+// Declare a semaphore
+sem_t mySemaphore;
 
-// Function to be executed by the first thread
-void *threadFunction1(void *arg) {
-    // Wait for the semaphore (similar to sem_wait)
-    sem_wait(&mutex);
+// Function to be executed by the thread
+void *threadFunction(void *arg) {
+    // Wait for the semaphore to be available
+    sem_wait(&mySemaphore);
 
-    // Critical section
-    printf("Thread 1 in critical section\n");
+    // Print "Hello World" from the thread
+    printf("Hello World\n");
 
-    // Simulate spending time in the critical section
-    sleep(2);
-
-    // Signal that the critical section is over (similar to sem_post)
-    sem_post(&mutex);
-
-    return NULL;
-}
-
-// Function to be executed by the second thread
-void *threadFunction2(void *arg) {
-    // Wait for the semaphore (similar to sem_wait)
-    sem_wait(&mutex);
-
-    // Critical section
-    printf("Thread 2 in critical section\n");
-
-    // Simulate spending time in the critical section
-    sleep(2);
-
-    // Signal that the critical section is over (similar to sem_post)
-    sem_post(&mutex);
+    // Release the semaphore
+    sem_post(&mySemaphore);
 
     return NULL;
 }
 
 int main() {
-    // Initialize the semaphore (mutex)
-    sem_init(&mutex, 0, 1);
+    // Initialize the semaphore with an initial value of 1
+    sem_init(&mySemaphore, 0, 1);
 
     // Create two threads
     pthread_t thread1, thread2;
+    
+    if (pthread_create(&thread1, NULL, threadFunction, NULL) != 0 ||
+        pthread_create(&thread2, NULL, threadFunction, NULL) != 0) {
+        perror("Error creating threads");
+        exit(EXIT_FAILURE);
+    }
 
-    pthread_create(&thread1, NULL, threadFunction1, NULL);
-    pthread_create(&thread2, NULL, threadFunction2, NULL);
+    // Sleep for 10 seconds
+    sleep(10);
 
+    // Release the semaphore to allow both threads to print "Hello World"
+    sem_post(&mySemaphore);
+    
     // Wait for the threads to finish
-    pthread_join(thread1, NULL);
-    pthread_join(thread2, NULL);
+    if (pthread_join(thread1, NULL) != 0 || pthread_join(thread2, NULL) != 0) {
+        perror("Error joining threads");
+        exit(EXIT_FAILURE);
+    }
 
     // Destroy the semaphore
-    sem_destroy(&mutex);
+    sem_destroy(&mySemaphore);
 
     return 0;
 }
-
