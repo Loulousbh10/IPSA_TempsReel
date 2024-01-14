@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Compiler le programme C
-gcc task3.c -o task3
+# Compile the task
+gcc task1.c -o task1
 
-# Nombre d'itérations
+# Iteration number
 nombre_executions=1000
 temps_total=0
 max_elapsed_time=0  # Variable to store the maximum elapsed time
@@ -11,8 +11,8 @@ max_elapsed_time=0  # Variable to store the maximum elapsed time
 for ((i = 0; i < nombre_executions; i++)); do
     start_time=$(date +%s%N)  # Get start time in nanoseconds
 
-    # Your program execution
-    ./task3
+    # Task execution
+    ./task1
 
     end_time=$(date +%s%N)    # Get end time in nanoseconds
     elapsed_time=$((end_time - start_time))
@@ -35,4 +35,3 @@ max_elapsed_time_ms=$(echo "scale=3; $max_elapsed_time / 1000000" | bc -l)
 
 echo "Temps moyen d'execution sur $nombre_executions iterations : $temps_moyen milliseconds"
 echo "Temps maximum d'execution sur $nombre_executions iterations : $max_elapsed_time_ms milliseconds"
-
