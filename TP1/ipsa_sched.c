@@ -1,13 +1,11 @@
 /* Library includes. */
 #include <stdio.h>
-#include <pthread.h>
 #include <stdlib.h>
 #include <time.h>
 
 /* Kernel includes. */
 #include "FreeRTOS.h"
 #include "task.h"
-#include "timers.h"
 #include "semphr.h"
 
 /* Local includes. */
@@ -43,6 +41,7 @@ static void prvQueueSendTask4(void *pvParameters);
 static QueueHandle_t xQueue = NULL;
 
 /*-----------------------------------------------------------*/
+
 // Binary search function
 int binarySearch(int arr[], int low, int high, int target) {
     while (low <= high) {
@@ -71,6 +70,7 @@ int binarySearch(int arr[], int low, int high, int target) {
 }
 
 /*-----------------------------------------------------------*/
+
 // Entry point of the application
 void ipsa_sched(void) {
 
@@ -148,6 +148,7 @@ static void prvQueueSendTask3(void *pvParameters) {
         vTaskDelay( xBlockTime );
     }
 }
+
 /*-----------------------------------------------------------*/
 
 // Task to send data at regular intervals
