@@ -1,12 +1,18 @@
 # Abstract
-This report presents an embedded system application written in C, utilizing the FreeRTOS library for real-time task scheduling. The application involves the creation of tasks, a queue, and timers to simulate asynchronous communication and periodic tasks. Four tasks were implemented, each with a specific function, and their execution times were approximated. Schedulability analysis was performed to ensure the feasibility of the task schedule. The report also covers the creation of a queue, a binary search function, and the overall scheduler structure. Additionally, execution instructions for the code are provided.
+This code is an example of a multi-tasking application using the FreeRTOS (Real-Time Operating System) kernel in C. The application defines four tasks with different priorities, each performing a specific operation at regular intervals. These tasks communicate through a queue, and their execution demonstrates the capabilities of task scheduling in a real-time system. This report provides insights into the code structure, execution environment, and key functionalities of the application.
 
 # Introduction
-The embedded system application utilizes FreeRTOS for real-time task scheduling. The tasks include periodic activities such as system status reporting, temperature conversion, multiplication of large numbers, and binary search. The code structure, task priorities, and execution times were carefully designed to simulate a real-world scenario. This report outlines the key components of the code and provides an overview of the execution environment.
+The code implements a simple real-time system using FreeRTOS, where four tasks with varying priorities are created. Each task performs a specific operation, such as printing messages, converting temperatures, performing arithmetic operations, and conducting a binary search on an array. These tasks communicate through a queue, showcasing the task scheduling capabilities of the FreeRTOS kernel.
 
 # Method
 ## Code Structure
-The code includes the definition of tasks, libraries, and constants necessary for the implementation. The four tasks were designed to execute periodically, and their priorities and execution times were detailed. The structure of the code was explained, and a script for approximating task execution times was mentioned.
+The application consists of five tasks: ipsa_sched, which initializes the system and starts the FreeRTOS scheduler, and four tasks (prvQueueSendTask1 to prvQueueSendTask4) with different priorities. Each task simulates a specific operation and periodically sends data to a shared queue.
+
+The priorities of the tasks are defined using preprocessor directives, ranging from highest priority (TASK_PRIORITY1) to lowest priority (TASK_PRIORITY4). The tasks are created using the xTaskCreate function, specifying the task function, stack size, and priority.
+
+A queue (xQueue) is created with a specific length for communication between tasks using xQueueCreate. Each task sends data to this queue at regular intervals using vTaskDelay.
+
+The tasks include operations such as printing a system message, converting temperatures, performing arithmetic multiplication, and conducting a binary search on an array. These operations showcase different types of computations and demonstrate the concurrent execution of tasks.
 
 ## Definitions of the tasks
 The codes includes the definition of the following tasks. We calculate the Worst Case Execution Time (WCET) by executing each task 1000 times by executing the bash file time.sh. This method is not the most precise way to estimate the WCET but since the execution times are in milliseconds and the periods in seconds, it is not a problem.
@@ -28,17 +34,10 @@ $$\ \iff 0.053 \le 1 $$
 
 Since the inequality is correct, we can say that the tasks are schedulable.
 
-## Queue and Binary Search
-A queue (xQueue) was created to facilitate communication between tasks and timers. Constants were defined to identify the source of data in the queue. A binary search function was also implemented, adhering to classic binary search algorithms, to be utilized in one of the periodic tasks.
-
-## Scheduler
-The scheduler (ipsa_sched.c) serves as the entry point for the application. It creates a queue, initializes tasks with their fixed priorities, and starts a timer. The FreeRTOS scheduler is then initiated, orchestrating the execution of tasks and timers within an infinite loop.
-
 # Results
-The execution of tasks is coordinated by the scheduler, with the prvQueueReceiveTask function handling data received from the queue. Depending on the source of the data, the task performs specific actions, such as system status reporting, temperature conversion, number multiplication, or binary search. The execution of tasks was designed to demonstrate real-time behavior in a simulated environment.
+The tasks run concurrently, with the FreeRTOS scheduler managing their execution based on their defined priorities. The system messages, temperature conversions, arithmetic operations, and binary search results are printed periodically. The binary search function, for example, demonstrates the ability to perform complex computations without blocking the execution of other tasks.
 
-# Conclusion
-The embedded system application successfully demonstrates the utilization of FreeRTOS for real-time task scheduling. The tasks execute periodically, communicating through a queue, and the application includes features such as a binary search function. Schedulability analysis confirms the feasibility of the task schedule. This report provides insights into the code structure, execution environment, and key functionalities of the application.
+In summary, the code illustrates a basic multi-tasking application using FreeRTOS, where tasks with different priorities perform diverse operations concurrently in a real-time environment. The application demonstrates the advantages of task scheduling in embedded systems, allowing for efficient and timely execution of various tasks.
 
 ### Additional notes
 - [ ] Make sure the ipsa_sched.c file is in the following folder : "FreeRTOSv202107.00/FreeRTOS/Demo/Posix_GCC".
