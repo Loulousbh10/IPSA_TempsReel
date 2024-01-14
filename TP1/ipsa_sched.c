@@ -15,16 +15,16 @@
 
 /* Priorities at which the tasks are created. */
 #define TASK_PRIORITY1    ( tskIDLE_PRIORITY + 1 ) //Highest priority
-#define TASK_PRIORITY2    ( tskIDLE_PRIORITY + 2 ) // Lowest priority
+#define TASK_PRIORITY2    ( tskIDLE_PRIORITY + 2 ) 
 #define TASK_PRIORITY3    ( tskIDLE_PRIORITY + 3 )
-#define TASK_PRIORITY4    ( tskIDLE_PRIORITY + 4 )
+#define TASK_PRIORITY4    ( tskIDLE_PRIORITY + 4 ) // Lowest priority
 
 /* The rate at which data is sent to the queue.  The times are converted from
  * milliseconds to ticks using the pdMS_TO_TICKS() macro. */
-#define FREQUENCY_MS1      pdMS_TO_TICKS( 30UL ) // 1 second
-#define FREQUENCY_MS2      pdMS_TO_TICKS( 30UL ) // 2 seconds
-#define FREQUENCY_MS3      pdMS_TO_TICKS( 30UL ) // 3 seconds
-#define FREQUENCY_MS4      pdMS_TO_TICKS( 30UL ) // 4 seconds
+#define FREQUENCY_MS1      pdMS_TO_TICKS( 1000UL ) // 1 second
+#define FREQUENCY_MS2      pdMS_TO_TICKS( 2000UL ) // 2 seconds
+#define FREQUENCY_MS3      pdMS_TO_TICKS( 3000UL ) // 3 seconds
+#define FREQUENCY_MS4      pdMS_TO_TICKS( 4000UL ) // 4 seconds
 
 /* The number of items the queue can hold at once. */
 #define mainQUEUE_LENGTH                   ( 4 )
@@ -39,11 +39,8 @@ static void prvQueueSendTask4(void *pvParameters);
 
 /*-----------------------------------------------------------*/
 
-/* The queue used by both tasks. */
+/* The queue used by all four tasks. */
 static QueueHandle_t xQueue = NULL;
-
-/* A software timer that is started from the tick hook. */
-static TimerHandle_t xTimer = NULL;
 
 /*-----------------------------------------------------------*/
 // Binary search function
@@ -121,7 +118,7 @@ static void prvQueueSendTask2(void *pvParameters) {
     (void)pvParameters;
 
     for (;;) {
- 		// Print the message
+ 		// Converts the temperature from Fahrenheit to Celsius
         double celsius;
             double fahrenheit = 98.60;
             celsius = (fahrenheit - 32.0) * 5.0 / 9.0;
@@ -134,13 +131,14 @@ static void prvQueueSendTask2(void *pvParameters) {
 
 /*-----------------------------------------------------------*/
 
-// Task to send data at intervals based on a timer
+// Task to send data at regular intervals
 static void prvQueueSendTask3(void *pvParameters) {
     const TickType_t xBlockTime = FREQUENCY_MS3;
 
     (void)pvParameters;
 
     for (;;) {
+    		// Calculates the multiplication of two big numbers
 			long bignumber1 = 4859648569;
             long bignumber2 = 4894825966;
             long long multiplication = bignumber1 * bignumber2;
@@ -152,7 +150,7 @@ static void prvQueueSendTask3(void *pvParameters) {
 }
 /*-----------------------------------------------------------*/
 
-// Task to send data at intervals based on another timer
+// Task to send data at regular intervals
 static void prvQueueSendTask4(void *pvParameters) {
     const TickType_t xBlockTime = FREQUENCY_MS4;
 
